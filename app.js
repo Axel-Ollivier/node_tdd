@@ -3,6 +3,8 @@ const bodyParser = require('body-parser')
 const db = require('./models')
 const postRoutes = require('./app/api/post')
 const authorRoutes = require('./app/api/author')
+const attendeeRoutes = require('./app/api/attendee')
+const bookingRoutes = require('./app/api/booking')
 
 const app = express()
 
@@ -19,4 +21,6 @@ app.get('/', async (req, res) => {
 
 postRoutes(app, db)
 authorRoutes(app, db)
+attendeeRoutes(app, db)
+bookingRoutes(app, db)
 module.exports = app
