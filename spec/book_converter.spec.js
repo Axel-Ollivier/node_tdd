@@ -74,6 +74,10 @@ describe('#client', () => {
         eventConverter = new EventConverter(eventPayload, account);
     })
 
+/*     test('Paylod good', async () => {
+        expect(EventConverter.payload).toEqual(eventPayload)
+    }) */
+
     test('it should return type Date for start date', async () => {
         expect(eventConverter.start instanceof Date).toBe(true);
     })
@@ -81,4 +85,11 @@ describe('#client', () => {
     test('it should return type Date for end date', async () => {
         expect(eventConverter.end instanceof Date).toBe(true);
     })
+    test('id payload is valid', async () => {
+        expect(eventConverter.html_link.split('=')[1]).toEqual('MGptdjJ1ZDljMWo3Y2kyZzFqZ21ybWY2c3Mgbmlja0BnZW1iYW5pLmNvbQ');
+    })
+    test('payload is confirmed', async () => {
+        expect(eventConverter.status).toBe('confirmed');
+    })
 });
+
