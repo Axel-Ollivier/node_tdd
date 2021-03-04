@@ -21,15 +21,17 @@ class EventConverter {
     constructor(payload, account) {
         this.payload = payload
         this.account = account
-        this.payload.start = Date.parse(this.payload.start)
-        this.payload.end = Date.parse(this.payload.end)
+        this.start = new Date(this.payload.start)
+        this.end = new Date(this.payload.end)
+        this._id = payload.id
+        this.html_link = payload.html_link
+        this.status = payload.status
+        this.summary = payload.summary
     }
 
     client() {
         let users = this.account.getClientUsers()
-        users.filter((user) => {
-            return user
-        })
+        return users
     }
 }
 
@@ -71,7 +73,12 @@ describe('#client', () => {
         }
         eventConverter = new EventConverter(eventPayload, account);
     })
-    test('It should not retrieve any author in db', async () => {
-        expect(eventConverter.client()).toBe(client1)
-    });
+
+    test('it should return type Date for start date', async () => {
+        expect(eventConverter.start instanceof Date).toBe(true);
+    })
+
+    test('it should return type Date for end date', async () => {
+        expect(eventConverter.end instanceof Date).toBe(true);
+    })
 });
