@@ -10,11 +10,12 @@ require('./factories/attendee').factory
 const factory = require('factory-girl').factory
 
 beforeAll(async () => {
-
+    await cleanDb(db)
 });
 
 afterAll(async () => {
-
+    await cleanDb(db)
+    await db.close()
 });
 
 class EventConverter {
@@ -30,8 +31,8 @@ class EventConverter {
     }
 
     client() {
-        let users = this.account.getClientUsers()
-        return users
+        const clients = this.account.getClientUsers().map(client => this.payload.attendees.filter(attendee => client.email=== attendee.email))
+        return clients[0][0];
     }
 }
 
