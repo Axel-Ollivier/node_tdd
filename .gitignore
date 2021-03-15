@@ -107,4 +107,4 @@ dist
 .idea
 
 #clean db
-.spec/helpers/cleanDb.js
+spec/helpers/cleanDb.js
