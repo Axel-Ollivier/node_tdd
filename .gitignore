@@ -105,3 +105,6 @@ dist
 
 # JetBrains's folder
 .idea
+
+#clean db
+.spec/helpers/cleanDb.js

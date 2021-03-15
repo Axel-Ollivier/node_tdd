@@ -7,6 +7,9 @@ require('./factories/author').factory
 require('./factories/post').factory
 require('./factories/booking').factory
 require('./factories/attendee').factory
+require('./factories/user').factory
+require('./factories/account').factory
+require('./factories/company').factory
 const factory = require('factory-girl').factory
 
 beforeAll(async () => {
