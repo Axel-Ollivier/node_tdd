@@ -1,7 +1,11 @@
 const cleanDb = async (db) => {
-    await db.Author.truncate({ cascade: true });
-    await db.Post.truncate({ cascade: true });
-    await db.Attendee.truncate({ cascade: true });
-    await db.Booking.truncate({ cascade: true });
+    await db.Author.destroy({truncate: {cascade: true}});
+    await db.Post.destroy({truncate: {cascade: true}});
+    await db.Attendee.destroy({truncate: {cascade: true}});
+    await db.Booking.destroy({truncate: {cascade: true}});
+    await db.Company.destroy({truncate: {cascade: true}});
+    await db.User.destroy({truncate: {cascade: true}});
+    await db.Account.destroy({truncate: {cascade: true}});
+
 }
 module.exports = cleanDb
