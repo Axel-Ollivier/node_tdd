@@ -79,7 +79,7 @@ describe('GET /users', () => {
             expect(response.statusCode).toBe(200);
         });
         test('It should return a json with a void array', async () => {
-            expect(response.body).toStrictEqual([]);
+            expect(response.body).toStrictEqual( {"data": []});
         });
     })
 
