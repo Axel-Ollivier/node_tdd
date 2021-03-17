@@ -72,7 +72,7 @@ describe('GET /users', () => {
             response = await request(app).get('/users').set('Accept', 'application/json');
         })
 
-        test('It should not retrieve any attendee in db', async () => {
+        test('It should not retrieve any user in db', async () => {
             const users = await db.User.findAll()
             expect(users.length).toBe(0);
         });
@@ -131,7 +131,7 @@ describe('POST /users', () => {
         expect(response.statusCode).toBe(200);
     });
 
-    test('It should return a json with the new author', async () => {
+    test('It should return a json with the new user', async () => {
         expect(response.body.firstName).toBe(data.firstName);
         expect(response.body.lastName).toBe(data.lastName);
         expect(response.body.email).toBe(data.email);
@@ -140,7 +140,7 @@ describe('POST /users', () => {
         expect(response.body.hourlyRate).toBe(data.hourlyRate);
     });
 
-    test('It should create and retrieve a post for the selected author', async () => {
+    test('It should create and retrieve a post for the selected user', async () => {
         const user = await db.User.findOne({
             where: {
                 firstName: response.body.data.attributes.firstName,
@@ -150,4 +150,45 @@ describe('POST /users', () => {
         expect(user.firstName).toBe(firstName)
         expect(user.lastName).toBe(lastName)
     });
+});
+
+
+describe('GET /companies', () => {
+
+    let response
+    let companies
+
+    beforeAll(async () => await cleanDb(db))
+
+    describe('when there is no companies in database', () => {
+        beforeAll(async () => {
+            response = await request(app).get('/companies').set('Accept', 'application/json');
+        })
+
+        test('It should not retrieve any company in db', async () => {
+            const companies = await db.Company.findAll()
+            expect(companies.length).toBe(0);
+        });
+        test('It should respond with a 200 status code', async () => {
+            expect(response.statusCode).toBe(200);
+        });
+        test('It should return a json with a void array', async () => {
+            expect(response.body).toStrictEqual({"data": []});
+        });
+    })
+
+    describe('when there is one or more companies in database', () => {
+        beforeAll(async () => {
+            companies = await factory.createMany('company', 5)
+            response = await request(app).get('/companies').set('Accept', 'application/json')
+        })
+
+        test('It should not retrieve any company in db', async () => {
+            const companiesInDatabase = await db.Company.findAll()
+            expect(companiesInDatabase.length).toBe(5)
+        });
+        test('It should respond with a 200 status code', async () => {
+            expect(response.statusCode).toBe(200)
+        });
+    })
 });
