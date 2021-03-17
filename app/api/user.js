@@ -18,9 +18,9 @@ module.exports = (app, db) => {
             email: req.body.data.attributes.email,
             userType: req.body.data.attributes.userType,
             company: req.body.data.attributes.company,
-            admin: req.body.data.attributes.admin,
-            clientDashboard: req.body.data.attributes.clientDashboard,
-            employeeDashboard: req.body.data.attributes.employeeDashboard,
+            //admin: req.body.data.attributes.admin,
+            //clientDashboard: req.body.data.attributes.clientDashboard,
+            //employeeDashboard: req.body.data.attributes.employeeDashboard,
             hourlyRate: req.body.data.attributes.hourlyRate 
           }).then((result) => {return res.json({data: {attributes: result}})}).catch((e) => console.log(e.message))
     })

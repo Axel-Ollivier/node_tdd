@@ -8,6 +8,7 @@ require('./factories/post').factory
 require('./factories/booking').factory
 require('./factories/attendee').factory
 require('./factories/user').factory
+require('./factories/company').factory
 const factory = require('factory-girl').factory
 
 beforeAll(async () => {
@@ -79,7 +80,7 @@ describe('GET /users', () => {
             expect(response.statusCode).toBe(200);
         });
         test('It should return a json with a void array', async () => {
-            expect(response.body).toStrictEqual( {"data": []});
+            expect(response.body).toStrictEqual({"data": []});
         });
     })
 
@@ -97,4 +98,56 @@ describe('GET /users', () => {
             expect(response.statusCode).toBe(200)
         });
     })
+});
+
+describe('POST /users', () => {
+
+    let response;
+    let data = {}
+    let firstName = 'John'
+    let lastName = 'Smith'
+    let email = 'johnsmith422@gmail.com'
+    let userType = 'employee'
+    let hourlyRate = '25'
+    let company = ""
+
+    beforeAll(async () => {
+        await cleanDb(db)
+        company = await factory.create('company')
+        data = {
+            "attributes": {
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": email,
+                "userType": userType,
+                "company": company.dataValues.companyId,
+                "hourlyRate": hourlyRate
+            }
+        }
+        response = await request(app).post('/user').send({"data": data});
+    })
+
+    test('It should respond with a 200 status code', async () => {
+        expect(response.statusCode).toBe(200);
+    });
+
+    test('It should return a json with the new author', async () => {
+        expect(response.body.firstName).toBe(data.firstName);
+        expect(response.body.lastName).toBe(data.lastName);
+        expect(response.body.email).toBe(data.email);
+        expect(response.body.userType).toBe(data.userType);
+        expect(response.body.company).toBe(data.company);
+        expect(response.body.hourlyRate).toBe(data.hourlyRate);
+    });
+
+    test('It should create and retrieve a post for the selected author', async () => {
+        const user = await db.User.findOne({
+            where: {
+                firstName: response.body.data.attributes.firstName,
+                lastName: response.body.data.attributes.lastName
+            }
+        })
+        expect(user.firstName).toBe(firstName)
+        expect(user.lastName).toBe(lastName)
+    });
 });
