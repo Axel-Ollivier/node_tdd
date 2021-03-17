@@ -5,6 +5,7 @@ const postRoutes = require('./app/api/post')
 const authorRoutes = require('./app/api/author')
 const attendeeRoutes = require('./app/api/attendee')
 const bookingRoutes = require('./app/api/booking')
+const userRoutes = require('./app/api/user')
 
 const app = express()
 
@@ -18,7 +19,7 @@ app.get('/', async (req, res) => {
     res.status(200).send('Hello World!')
 })
 
-app.get('/api/users', async (req, res) => {
+/* app.get('/api/users', async (req, res) => {
     await db.User.findAll().then((result) => {
       let response = []
       result.forEach(el => {
@@ -30,7 +31,7 @@ app.get('/api/users', async (req, res) => {
       })
     })
   })
-  
+   */
 app.get('/api/companies', async (req, res) => {
   await db.Company.findAll().then((result) => {
     let response = []
@@ -44,7 +45,7 @@ app.get('/api/companies', async (req, res) => {
   })
 })
 
-app.post('/api/users', async (req, res) => {
+/* app.post('/api/users', async (req, res) => {
     await db.User.create({
       firstName: req.body.data.attributes.firstName,
       lastName: req.body.data.attributes.lastName,
@@ -56,10 +57,11 @@ app.post('/api/users', async (req, res) => {
       employeeDashboard: req.body.data.attributes.employeeDashboard,
       hourlyRate: req.body.data.attributes.hourlyRate 
     }).then((result) => {return res.json({data: {attributes: result}})}).catch((e) => console.log(e.message))
-})
+}) */
 
 postRoutes(app, db)
 authorRoutes(app, db)
 attendeeRoutes(app, db)
 bookingRoutes(app, db)
+userRoutes(app, db)
 module.exports = app
