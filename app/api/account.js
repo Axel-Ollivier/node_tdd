@@ -5,10 +5,9 @@ var bcrypt = require("bcryptjs");
 module.exports = (app, db) => {
     app.post('/account/signup', async (req, res) => {
         await db.Account.create({
-            accountId: req.body.data.attributes.accountId,
-            accountName: req.body.data.attributes.accountName,
             accountEmail: req.body.data.attributes.accountEmail,
             accountPassword: req.body.data.attributes.bcrypt.hashSync(req.body.accountPassword, 8),
+            UserId: req.body.data.attributes.userId
           }).then((result) => {return res.json({data: {attributes: result}})}).catch((e) => console.log(e.message))
     })
 
@@ -21,7 +20,7 @@ module.exports = (app, db) => {
             }
 
             var passwordIsValid = bcrypt.compareSync(
-                req.body.accountPassword,
+                req.body.data.attributes.password,
                 result.accountPassword
             );
 
@@ -39,7 +38,7 @@ module.exports = (app, db) => {
             return res.res.status(200).send({
                 "data": {
                     "attributes": {
-                        "id": result._id,
+                        "id": result.id,
                         "email": result.email,
                         "accessToken": token
                     }

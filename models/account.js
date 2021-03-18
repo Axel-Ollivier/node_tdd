@@ -14,16 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Account.init({
-    accountId: DataTypes.INTEGER,
-    accountName: DataTypes.STRING,
     accountEmail: DataTypes.STRING,
-    accountPassword: DataTypes.STRING,
+    accountPassword: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Account',
   });
-  Account.associate = (models) => {
-    Account.hasOne(models.User)
-  }
   return Account;
 };

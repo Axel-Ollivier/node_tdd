@@ -1,4 +1,4 @@
- const express = require('express')
+const express = require('express')
 const bodyParser = require('body-parser')
 const db = require('./models')
 const postRoutes = require('./app/api/post')
@@ -7,6 +7,7 @@ const attendeeRoutes = require('./app/api/attendee')
 const bookingRoutes = require('./app/api/booking')
 const userRoutes = require('./app/api/user')
 const companyRoutes = require('./app/api/company')
+const accountRoutes = require('./app/api/account')
 
 const app = express()
 
@@ -26,4 +27,5 @@ attendeeRoutes(app, db)
 bookingRoutes(app, db)
 userRoutes(app, db)
 companyRoutes(app, db)
+accountRoutes(app, db)
 module.exports = app

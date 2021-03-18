@@ -9,6 +9,7 @@ require('./factories/booking').factory
 require('./factories/attendee').factory
 require('./factories/user').factory
 require('./factories/company').factory
+require('./factories/account').factory
 const factory = require('factory-girl').factory
 
 beforeAll(async () => {
@@ -20,6 +21,39 @@ afterAll(async () => {
     await db.close()
 });
 
+
+describe('POST /account/signin', () => {
+
+    let response
+    let account
+
+    beforeAll(async () => await cleanDb(db))
+
+    describe('when there is no attendee in database', () => {
+        beforeAll(async () => {
+            account = await factory.create('account')
+            console.log(account.dataValues.accountEmail)
+            console.log(account.dataValues.accountPassword)
+            response = await request(app).post('/account/signin').send({
+                "data": {
+                    "attributes": {
+                        "email": account.dataValues.accountEmail,
+                        "password": account.dataValues.accountPassword
+                    }
+                }
+            }).set('Accept', 'application/json');
+            console.log(response.body)
+            console.log(response.statusCode)
+        })
+
+        test('It should return a token', async () => {
+            expect(response.body.data.attributes.accessToken).toBe(false);
+        });
+
+    })
+
+});
+
 describe('GET /attendees', () => {
 
     let response
@@ -29,7 +63,7 @@ describe('GET /attendees', () => {
 
     describe('when there is no attendee in database', () => {
         beforeAll(async () => {
-            response = await request(app).get('/attendees').set('Accept', 'application/json');
+            response = await request(app).get('/attendees').set({'Accept': 'application/json', 'x-access-token': ''});
         })
 
         test('It should not retrieve any attendee in db', async () => {
