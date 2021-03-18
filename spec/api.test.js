@@ -24,17 +24,29 @@ afterAll(async () => {
 
 describe('POST /account/signin', () => {
 
-    let response
+    let response_signin
+    let response_signup
     let account
+    let user
 
     beforeAll(async () => await cleanDb(db))
 
     describe('when there is no attendee in database', () => {
         beforeAll(async () => {
             account = await factory.create('account')
-            console.log(account.dataValues.accountEmail)
-            console.log(account.dataValues.accountPassword)
-            response = await request(app).post('/account/signin').send({
+            user = await factory.create('user')
+            response_signup = await request(app).post('/account/signup').send({
+                "data": {
+                    "attributes": {
+                        "accountEmail": account.dataValues.accountEmail,
+                        "accountPassword": account.dataValues.accountPassword,
+                        "UserId": user.dataValues.id
+                    }
+                }
+            }).set('Accept', 'application/json');
+            console.log(response_signup.body)
+            console.log(response_signup.statusCode)
+            response_signin = await request(app).post('/account/signin').send({
                 "data": {
                     "attributes": {
                         "email": account.dataValues.accountEmail,
@@ -42,12 +54,12 @@ describe('POST /account/signin', () => {
                     }
                 }
             }).set('Accept', 'application/json');
-            console.log(response.body)
-            console.log(response.statusCode)
+            console.log(response_signin.body)
+            console.log(response_signin.statusCode)
         })
 
         test('It should return a token', async () => {
-            expect(response.body.data.attributes.accessToken).toBe(false);
+            expect(response_signin.body.data.attributes.accessToken).toBe(false);
         });
 
     })

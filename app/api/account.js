@@ -6,9 +6,11 @@ module.exports = (app, db) => {
     app.post('/account/signup', async (req, res) => {
         await db.Account.create({
             accountEmail: req.body.data.attributes.accountEmail,
-            accountPassword: req.body.data.attributes.bcrypt.hashSync(req.body.accountPassword, 8),
-            UserId: req.body.data.attributes.userId
-          }).then((result) => {return res.json({data: {attributes: result}})}).catch((e) => console.log(e.message))
+            accountPassword: bcrypt.hashSync(req.body.data.attributes.accountPassword, 8),
+            UserId: req.body.data.attributes.UserId
+        }).then((result) => {
+            return res.json({data: {attributes: result}})
+        }).catch((e) => console.log(e.message))
     })
 
     app.post('/account/signin', async (req, res) => {
@@ -27,7 +29,8 @@ module.exports = (app, db) => {
             if (!passwordIsValid) {
                 return res.status(401).send({
                     accessToken: null,
-                    message: "Invalid Password!"
+                    message: "Invalid Password!",
+                    compareSync: passwordIsValid
                 });
             }
 
