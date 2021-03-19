@@ -8,6 +8,8 @@ https://www.gembani.com/fr/blog/le-tdd.html
 Tests for the 18/03/2021
 This repository has been reused for a second exercice (back-end for modern-intra)
 
+We cannot figure how to connect this project to the front-end modern-intra
+
 ###New features
 
 * user routes and model have been improved
