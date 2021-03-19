@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
+    password: DataTypes.STRING,
     email: DataTypes.STRING,
     userType: DataTypes.STRING,
     hourlyRate: DataTypes.INTEGER
@@ -25,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
   });
   User.associate = (models) => {
     User.belongsTo(models.Company)
-    User.hasOne(models.Account)
   }
   return User;
 };

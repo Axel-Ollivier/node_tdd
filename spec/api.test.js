@@ -21,51 +21,6 @@ afterAll(async () => {
     await db.close()
 });
 
-
-describe('POST /account/signin', () => {
-
-    let response_signin
-    let response_signup
-    let account
-    let user
-
-    beforeAll(async () => await cleanDb(db))
-
-    describe('when there is no attendee in database', () => {
-        beforeAll(async () => {
-            account = await factory.create('account')
-            user = await factory.create('user')
-            response_signup = await request(app).post('/account/signup').send({
-                "data": {
-                    "attributes": {
-                        "accountEmail": account.dataValues.accountEmail,
-                        "accountPassword": account.dataValues.accountPassword,
-                        "UserId": user.dataValues.id
-                    }
-                }
-            }).set('Accept', 'application/json');
-            console.log(response_signup.body)
-            console.log(response_signup.statusCode)
-            response_signin = await request(app).post('/account/signin').send({
-                "data": {
-                    "attributes": {
-                        "email": account.dataValues.accountEmail,
-                        "password": account.dataValues.accountPassword
-                    }
-                }
-            }).set('Accept', 'application/json');
-            console.log(response_signin.body)
-            console.log(response_signin.statusCode)
-        })
-
-        test('It should return a token', async () => {
-            expect(response_signin.body.data.attributes.accessToken).toBe(false);
-        });
-
-    })
-
-});
-
 describe('GET /attendees', () => {
 
     let response
@@ -148,11 +103,13 @@ describe('GET /users', () => {
 
 describe('POST /users', () => {
 
-    let response;
+    let response_signup;
+    let response_signin;
     let data = {}
     let firstName = 'John'
     let lastName = 'Smith'
     let email = 'johnsmith422@gmail.com'
+    let password = 'MyPassW0rd'
     let userType = 'employee'
     let hourlyRate = '25'
     let company = ""
@@ -165,37 +122,44 @@ describe('POST /users', () => {
                 "firstName": firstName,
                 "lastName": lastName,
                 "email": email,
+                "password": password,
                 "userType": userType,
                 "company": company.dataValues.companyId,
                 "hourlyRate": hourlyRate
             }
         }
-        response = await request(app).post('/user').send({"data": data});
+        response_signup = await request(app).post('/user').send({"data": data});
+        response_signin = await request(app).post('/user/signin').send({"data": data});
     })
 
-    test('It should respond with a 200 status code', async () => {
-        expect(response.statusCode).toBe(200);
+    test('It should respond with a 200 status code /signup', async () => {
+        expect(response_signup.statusCode).toBe(200);
     });
 
-    test('It should return a json with the new user', async () => {
-        expect(response.body.firstName).toBe(data.firstName);
-        expect(response.body.lastName).toBe(data.lastName);
-        expect(response.body.email).toBe(data.email);
-        expect(response.body.userType).toBe(data.userType);
-        expect(response.body.company).toBe(data.company);
-        expect(response.body.hourlyRate).toBe(data.hourlyRate);
+    test('It should return a json with the new user /signup', async () => {
+        expect(response_signup.body.firstName).toBe(data.firstName);
+        expect(response_signup.body.lastName).toBe(data.lastName);
+        expect(response_signup.body.email).toBe(data.email);
+        expect(response_signup.body.userType).toBe(data.userType);
+        expect(response_signup.body.company).toBe(data.company);
+        expect(response_signup.body.hourlyRate).toBe(data.hourlyRate);
     });
 
     test('It should create and retrieve a post for the selected user', async () => {
         const user = await db.User.findOne({
             where: {
-                firstName: response.body.data.attributes.firstName,
-                lastName: response.body.data.attributes.lastName
+                firstName: response_signup.body.data.attributes.firstName,
+                lastName: response_signup.body.data.attributes.lastName
             }
         })
         expect(user.firstName).toBe(firstName)
         expect(user.lastName).toBe(lastName)
     });
+
+    test('It should respond with a 200 status code /sginin', async () => {
+        expect(response_signin.statusCode).toBe(200);
+    });
+
 });
 
 
