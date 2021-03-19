@@ -33,7 +33,9 @@ module.exports = (app, db) => {
     })
     app.post('/user/signin', async (req, res) => {
         await db.User.findOne({
-            email: req.body.data.attributes.email,
+            where: {
+                email: req.body.data.attributes.email
+            }
         }).then((result) => {
             if (!result) {
                 return res.status(404).send({message: "User not found."});
@@ -56,7 +58,7 @@ module.exports = (app, db) => {
                 expiresIn: 86400 // 24 hours
             });
 
-            return res.res.status(200).send({
+            return res.status(200).send({
                 "data": {
                     "attributes": {
                         "id": result.id,
