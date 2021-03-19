@@ -9,6 +9,11 @@ module.exports = (app, db) => {
                         return res.json(result)
                     })
             })
+        } else {
+            return res.status(403).send({
+                accessToken: null,
+                message: "Unauthorized!",
+            });
         }
     })
     app.post('/attendee', async (req, res) => {
@@ -23,6 +28,11 @@ module.exports = (app, db) => {
                     BookingId: req.body.BookingId,
                 }).then((result) => res.json(result))
             })
+        } else {
+            return res.status(403).send({
+                accessToken: null,
+                message: "Unauthorized!",
+            });
         }
     })
 }

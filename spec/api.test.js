@@ -21,46 +21,6 @@ afterAll(async () => {
     await db.close()
 });
 
-describe('GET /attendees', () => {
-
-    let response
-    let attendees
-
-    beforeAll(async () => await cleanDb(db))
-
-    describe('when there is no attendee in database', () => {
-        beforeAll(async () => {
-            response = await request(app).get('/attendees').set({'Accept': 'application/json', 'x-access-token': ''});
-        })
-
-        test('It should not retrieve any attendee in db', async () => {
-            const attendees = await db.Attendee.findAll()
-            expect(attendees.length).toBe(0);
-        });
-        test('It should respond with a 200 status code', async () => {
-            expect(response.statusCode).toBe(200);
-        });
-        test('It should return a json with a void array', async () => {
-            expect(response.body).toStrictEqual([]);
-        });
-    })
-
-    describe('when there is one or more attendees in database', () => {
-        beforeAll(async () => {
-            attendees = await factory.createMany('attendee', 5)
-            response = await request(app).get('/attendees').set('Accept', 'application/json')
-        })
-
-        test('It should not retrieve any attendee in db', async () => {
-            const attendeesInDatabase = await db.Attendee.findAll()
-            expect(attendeesInDatabase.length).toBe(5)
-        });
-        test('It should respond with a 200 status code', async () => {
-            expect(response.statusCode).toBe(200)
-        });
-    })
-});
-
 describe('GET /users', () => {
 
     let response
@@ -158,6 +118,47 @@ describe('POST /users', () => {
 
     test('It should respond with a 200 status code /sginin', async () => {
         expect(response_signin.statusCode).toBe(200);
+    });
+
+
+    describe('GET /attendees (with token securisation', () => {
+
+        let response
+        let attendees
+
+        beforeAll(async () => await cleanDb(db))
+
+        describe('when there is no attendee in database', () => {
+            beforeAll(async () => {
+                response = await request(app).get('/attendees').set({'Accept': 'application/json', 'x-access-token': response_signin.body.data.attributes.accessToken});
+            })
+
+            test('It should not retrieve any attendee in db', async () => {
+                const attendees = await db.Attendee.findAll()
+                expect(attendees.length).toBe(0);
+            });
+            test('It should respond with a 200 status code', async () => {
+                expect(response.statusCode).toBe(200);
+            });
+            test('It should return a json with a void array', async () => {
+                expect(response.body).toStrictEqual([]);
+            });
+        })
+
+        describe('when there is one or more attendees in database', () => {
+            beforeAll(async () => {
+                attendees = await factory.createMany('attendee', 5)
+                response = await request(app).get('/attendees').set({'Accept': 'application/json', 'x-access-token': response_signin.body.data.attributes.accessToken})
+            })
+
+            test('It should not retrieve any attendee in db', async () => {
+                const attendeesInDatabase = await db.Attendee.findAll()
+                expect(attendeesInDatabase.length).toBe(5)
+            });
+            test('It should respond with a 200 status code', async () => {
+                expect(response.statusCode).toBe(200)
+            });
+        })
     });
 
 });
